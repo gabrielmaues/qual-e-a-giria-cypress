@@ -1,99 +1,124 @@
-🧩 BugBank QA Automation
+# Qual é a Gíria – Testes Automatizados
 
-End-to-end (E2E) automation for BugBank using Cypress.
-This repository contains tests, Page Objects, and custom commands for user registration, account number capture, and money transfers.
+Automação de testes end-to-end para a aplicação **Qual é a Gíria**, utilizando o framework Cypress.
 
-🔧 Requirements
+## 📌 Objetivo
 
-Node.js (LTS recommended) — comes with npm
+Este projeto tem como objetivo validar funcionalidades principais da aplicação, garantindo que fluxos críticos funcionem corretamente através de testes automatizados.
 
-Internet access to install dependencies
+Entre os cenários testados estão:
 
-Access to the BugBank website
+* Login de usuário
+* Inserção de novas gírias
+* Validação do significado cadastrado
+* Interação com formulários e elementos da interface
 
-🔁 Installation (from scratch)
+## 🚀 Tecnologias utilizadas
 
-Clone the repository:
+* JavaScript
+* Cypress
+* Node.js
+* Page Object Pattern
 
-git clone https://github.com/gabrielmaues/bugbank-cypress-tests
-cd "path\to\your\project"
+## 📂 Estrutura do projeto
 
-
-Check Node and npm versions:
-
-node -v
-npm -v
-
-
-If not installed, get Node.js (includes npm):
-👉 https://nodejs.org
- (LTS version recommended)
-
-Install dependencies:
-
-npm install
-
-Install Cypress (if not listed as a dependency):
-
-npm install cypress --save-dev
-
-Note: This project should already list Cypress in devDependencies. The command above ensures it’s installed locally.
-
-📁 Project Structure
+```
 cypress/
-├── e2e/                  # Tests (e.g., bankTransfer.cy.js)
-├── fixtures/             # Test data (users.json, transfer.json)
-├── pages/                # Page Objects (e.g., TransferPage.js)
-├── support/
-│   ├── commands.js       # Custom commands (createLogin, submitLogin, start)
-│   └── e2e.js            # Global imports and hooks
-cypress.config.js
-package.json
-README.md
+ ├─ e2e/           # Testes end-to-end
+ ├─ fixtures/      # Dados de teste (JSON)
+ ├─ pages/         # Page Objects
+ ├─ support/       # Comandos customizados e configurações
 
-🧭 Main Flows Implemented
+cypress.config.js  # Configuração do Cypress
+package.json       # Dependências do projeto
+```
 
-createLogin(email, name, password, aliasName)
-→ Opens registration, signs up the user, captures the account number, and stores the following aliases:
+## ⚙️ Instalação
 
-@{aliasName}Main → account number before the hyphen
+Clone o repositório:
 
-@{aliasName}Digit → digit after the hyphen
+```
+git clone https://github.com/gabrielmaues/qual-e-a-giria-cypress.git
+```
 
-submitLogin(email, password)
-→ Performs login (uses within() on the login container to avoid input conflicts).
+Entre na pasta do projeto:
 
-TransferPage.makeTransfer(mainAlias, digitAlias, value, description)
-→ Fills account number (main), digit (name="digit"), amount, and description fields, then clicks “Transfer now”.
+```
+cd qual-e-a-giria-cypress
+```
 
-✅ Best Practices / Recommendations
+Instale as dependências:
 
-Page Objects:
-This project uses Page Objects to organize and abstract interactions with UI elements. Each page has its own class (e.g., TransferPage.js) containing clear and reusable methods. This improves test readability, maintainability, and keeps tests decoupled from specific HTML/CSS structures.
+```
+npm install
+```
 
-Custom Commands:
-Custom commands (commands.js) encapsulate repetitive flows like createLogin, submitLogin, or makeTransfer. This reduces code duplication across E2E tests, improves clarity, and makes future changes easier.
+## ▶️ Executar os testes
 
-Example: cy.createLogin(email, name, password, aliasName) performs the full registration flow and account capture, reusable in any test.
+Abrir interface do Cypress:
 
-Scoped Test Data:
-Test data is stored in fixtures (e.g., users.json, transfer.json) and assigned to unique aliases per user (e.g., accountUser1Main, accountUser1Digit). This prevents overwriting and ensures data consistency, making tests more maintainable and reliable.
-
-within() Usage:
-Use within() to limit scope when selecting elements, preventing conflicts between inputs that appear multiple times (e.g., login vs registration).
-
-Handling Hidden or Persistent Inputs:
-When inputs remain in the DOM or are invisible due to animations:
-
-Use .clear({ force: true }) or {ctrl}a + .type(...) with { force: true } as needed.
-
-Flexible Regex for Account Numbers:
-Capture account numbers using a flexible regex (\d+)-(\d) and validate before use to prevent errors.
-
-🧪 Running Tests
-
-Interactive mode (recommended for development):
+```
 npx cypress open
+```
 
-CI / Headless mode:
+Executar testes no modo headless:
+
+```
 npx cypress run
+```
+
+## 🧪 Padrões utilizados
+
+O projeto utiliza o padrão **Page Object**, que separa:
+
+* **Testes** → Cenários e validações
+* **Pages** → Interações com a interface
+
+Isso facilita:
+
+* manutenção
+* reutilização de código
+* legibilidade dos testes
+
+## ⚡ Custom Commands
+
+Foram criados **comandos customizados** para reutilizar ações comuns e evitar repetição de código nos testes.
+
+Esses comandos ficam no diretório:
+
+```
+cypress/support/commands.js
+```
+
+### Exemplos de comandos utilizados
+
+**Inicializar aplicação**
+
+```
+cy.start()
+```
+
+Responsável por abrir a aplicação e preparar o ambiente inicial para os testes.
+
+**Realizar login**
+
+```
+cy.submitLogin(email, password)
+```
+
+Executa o fluxo de login automaticamente, preenchendo os campos e enviando o formulário.
+
+### Vantagens dos Custom Commands
+
+* Redução de código duplicado
+* Testes mais limpos e legíveis
+* Centralização da lógica reutilizável
+* Facilidade de manutenção
+
+## 📊 Boas práticas aplicadas
+
+* Uso de **fixtures** para dados de teste
+* **Custom Commands** para reutilização de ações
+* Separação entre **testes e interações com a página**
+* Seletores mais estáveis para evitar testes frágeis
+* Estrutura escalável para novos cenários
